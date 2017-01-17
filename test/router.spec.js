@@ -118,8 +118,8 @@ describe('Router', function () {
 
     describe('with middleware', function () {
       it('includes the middleware', function () {
-        let controller2 = {
-          show: (ctx) => {
+        class Controller2 {
+          static show (ctx) {
             ctx.status = 200
           }
         }
@@ -128,7 +128,7 @@ describe('Router', function () {
           return next()
         }
 
-        router.resources('users', middleware, controller2)
+        router.resources('users', middleware, Controller2)
         app.use(router.routes())
 
         return request(app.listen())
@@ -153,7 +153,17 @@ describe('Router', function () {
 
     describe('using the `only` option', function () {
       beforeEach(function () {
-        router.resources('users', controller, { only: 'show' })
+        class Controller {
+          static show (ctx) {
+            ctx.status = 200
+          }
+
+          static index (ctx) {
+            ctx.status = 200
+          }
+        }
+
+        router.resources('users', Controller, { only: 'show' })
         app.use(router.routes())
       })
 
