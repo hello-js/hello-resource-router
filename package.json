@@ -1,0 +1,9 @@
+{
+  "name": "koa-restful-router",
+  "version": "1.0.0",
+  "description": "koa-router extended to include RESTful resources",
+  "main": "lib/index.js",
+  "repository": "https://github.com/venables/koa-restful-router",
+  "author": "Matt Venables <mattvenables@gmail.com>",
+  "license": "MIT"
+}
