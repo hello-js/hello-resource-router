@@ -1,6 +1,6 @@
 {
   "name": "koa-router-with-resources",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "koa-router extended to include RESTful resources",
   "main": "lib/index.js",
   "repository": "https://github.com/venables/koa-router-with-resources",
