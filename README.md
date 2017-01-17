@@ -19,6 +19,9 @@ npm install koa-restful-router --save
 
 ## Usage
 
+Usage for `koa-restful-router` is exactly the same as the usage for [koa-router](https://github.com/alexmingoia/koa-router/tree/master/),
+with an added method called `resources`.
+
 By default, `koa-restful-router` maps a `resource` to the default 5 CRUD methods on a controller:
 
 * `index`
