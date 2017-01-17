@@ -1,6 +1,6 @@
-# koa-restful-router
+# koa-router-with-resources
 
-`koa-restful-router` is build upon the popular [koa-router](https://github.com/alexmingoia/koa-router/tree/master/) package
+`koa-router-with-resources` is build upon the popular [koa-router](https://github.com/alexmingoia/koa-router/tree/master/) package
 and extended to include RESTful resource handling (much like Rails' router) which map to standard CRUD operations.
 
 ## Installation
@@ -8,21 +8,21 @@ and extended to include RESTful resource handling (much like Rails' router) whic
 Install via yarn or npm:
 
 ```
-yarn add koa-restful-router
+yarn add koa-router-with-resources
 ```
 
 or
 
 ```
-npm install koa-restful-router --save
+npm install koa-router-with-resources --save
 ```
 
 ## Usage
 
-Usage for `koa-restful-router` is exactly the same as the usage for [koa-router](https://github.com/alexmingoia/koa-router/tree/master/),
+Usage for `koa-router-with-resources` is exactly the same as the usage for [koa-router](https://github.com/alexmingoia/koa-router/tree/master/),
 with an added method called `resources`.
 
-By default, `koa-restful-router` maps a `resource` to the default 5 CRUD methods on a controller:
+By default, `koa-router-with-resources` maps a `resource` to the default 5 CRUD methods on a controller:
 
 * `index`
 * `show`
@@ -30,10 +30,12 @@ By default, `koa-restful-router` maps a `resource` to the default 5 CRUD methods
 * `update`
 * `destroy`
 
+The router attempts to be *smart* by checking if those methods exist. If any of them do not exist,
+an HTTP status of `501 Not Implemented` will be returned to the client.
 ### Default behavior:
 
 ```js
-const Router = require('koa-restful-router')
+const Router = require('koa-router-with-resources')
 
 let router = new Router()
 router.resrouces('users', controller)
@@ -47,12 +49,8 @@ This creates the following routes:
 | `GET /users/:id`    | `show`             |
 | `POST /users`       | `create`           |
 | `PUT /users/:id`    | `update`           |
+| `PATCH /users/:id`  | `update`           |
 | `DELETE /users/:id` | `destroy`          |
-
-
-### Disabling methods
-
-
 
 ## API
 
@@ -68,7 +66,6 @@ router.resources(path, [middleware], controller, [options])
 
 ## Examples
 
-
 #### Example 1:
 
 ```js
@@ -78,6 +75,7 @@ router.resources('users', controller.Users)
 // GET /users/:id
 // POST /users
 // PUT /users/:id
+// PATCH /users/:id
 // DELETE /users/:id
 ```
 
@@ -105,6 +103,7 @@ let router = new Router()
 router.resources('users', controller.Users, { except: ['index', 'show'] })
 // POST /users
 // PUT /users/:id
+// PATCH /users/:id
 // DELETE /users/:id
 ```
 
@@ -117,6 +116,5 @@ router.resources('users', controller.Users, { except: 'destroy' })
 // GET /users/:id
 // POST /users
 // PUT /users/:id
+// PATCH /users/:id
 ```
-
-

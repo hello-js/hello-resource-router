@@ -1,13 +1,27 @@
 {
-  "name": "koa-restful-router",
+  "name": "koa-router-with-resources",
   "version": "1.0.0",
   "description": "koa-router extended to include RESTful resources",
   "main": "lib/index.js",
-  "repository": "https://github.com/venables/koa-restful-router",
+  "repository": "https://github.com/venables/koa-router-with-resources",
   "author": "Matt Venables <mattvenables@gmail.com>",
   "license": "MIT",
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test"
+  },
   "dependencies": {
     "koa-router": "^7.1.0",
     "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "koa": "next",
+    "mocha": "^3.2.0",
+    "supertest": "^2.0.1"
   }
 }
