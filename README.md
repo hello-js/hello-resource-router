@@ -1,5 +1,11 @@
 # koa-router-with-resources
 
+[![Version](https://img.shields.io/npm/v/koa-router-with-resources.svg?style=flat-square)](https://www.npmjs.com/package/koa-router-with-resources)
+[![Dependency Status](https://img.shields.io/david/venables/koa-router-with-resources.svg?style=flat-square)](https://david-dm.org/venables/koa-router-with-resources)
+[![Build Status](https://img.shields.io/travis/venables/koa-router-with-resources/master.svg?style=flat-square)](https://travis-ci.org/venables/koa-router-with-resources)
+[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![Downloads](https://img.shields.io/npm/dm/koa-router-with-resources.svg?style=flat-square)](https://www.npmjs.com/package/koa-router-with-resources)
+
 `koa-router-with-resources` is build upon the popular [koa-router](https://github.com/alexmingoia/koa-router/tree/master/) package
 and extended to include RESTful resource handling (much like Rails' router) which map to standard CRUD operations.
 
