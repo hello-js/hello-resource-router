@@ -14,7 +14,7 @@ const user2 = {
   name: 'User 2'
 }
 
-const controller = {
+const ControllerObject = {
   index: (ctx) => {
     ctx.body = { users: [user1, user2] }
   },
@@ -30,12 +30,38 @@ const controller = {
   },
   edit: (ctx) => {
     ctx.state.user = user1
-    ctx.body = 'edit'
+    ctx.body = `edit:${JSON.stringify(ctx.params)}`
   },
   update: (ctx) => {
     ctx.body = { user: user1 }
   },
   destroy: (ctx) => {
+    ctx.status = 204
+  }
+}
+
+class ControllerClass {
+  static index (ctx) {
+    ctx.body = { users: [user1, user2] }
+  }
+  static new (ctx) {
+    ctx.body = 'new'
+  }
+  static show (ctx) {
+    ctx.body = { user: user1 }
+  }
+  static create (ctx) {
+    ctx.body = { user: user2 }
+    ctx.status = 201
+  }
+  static edit (ctx) {
+    ctx.state.user = user1
+    ctx.body = `edit:${JSON.stringify(ctx.params)}`
+  }
+  static update (ctx) {
+    ctx.body = { user: user1 }
+  }
+  static destroy (ctx) {
     ctx.status = 204
   }
 }
@@ -50,160 +76,256 @@ describe('Router', function () {
   })
 
   describe('#resources', function () {
-    describe('defaults', function () {
-      beforeEach(function () {
-        router.resources('users', controller)
+    [ControllerObject, ControllerClass].forEach((controller, i) => {
+      describe(`with a ${i === 0 ? 'object controller' : 'class controller'}`, function () {
+        describe('defaults', function () {
+          beforeEach(function () {
+            router.resources('users', controller)
 
-        app.use(router.routes())
-      })
-
-      it('handles the GET #index method', function () {
-        return request(app.listen())
-          .get('/users')
-          .expect(200)
-          .expect({
-            users: [
-              user1,
-              user2
-            ]
+            app.use(router.routes())
           })
-      })
 
-      it('handles the GET #new method', function () {
-        return request(app.listen())
-          .get('/users/new')
-          .expect(200)
-          .expect('new')
-      })
-
-      it('handles the GET #show method', function () {
-        return request(app.listen())
-          .get('/users/1')
-          .expect(200)
-          .expect({
-            user: user1
+          it('handles the GET #index method', function () {
+            return request(app.listen())
+              .get('/users')
+              .expect(200)
+              .expect({
+                users: [
+                  user1,
+                  user2
+                ]
+              })
           })
-      })
 
-      it('handles the GET #edit method', function () {
-        return request(app.listen())
-          .get('/users/1/edit')
-          .expect(200)
-          .expect('edit')
-      })
-
-      it('handles the POST #create method', function () {
-        return request(app.listen())
-          .post('/users')
-          .expect(201)
-          .expect({
-            user: user2
+          it('handles the GET #new method', function () {
+            return request(app.listen())
+              .get('/users/new')
+              .expect(200)
+              .expect('new')
           })
-      })
 
-      it('handles the PUT #update method', function () {
-        return request(app.listen())
-          .put('/users/1')
-          .expect(200)
-          .expect({
-            user: user1
+          it('handles the GET #show method', function () {
+            return request(app.listen())
+              .get('/users/1')
+              .expect(200)
+              .expect({
+                user: user1
+              })
           })
-      })
 
-      it('handles the PATCH #update method', function () {
-        return request(app.listen())
-          .patch('/users/1')
-          .expect(200)
-          .expect({
-            user: user1
+          it('handles the GET #edit method', function () {
+            return request(app.listen())
+              .get('/users/1/edit')
+              .expect(200)
+              .expect('edit:{"id":"1"}')
           })
-      })
 
-      it('handles the DELETE #destroy method', function () {
-        return request(app.listen())
-          .del('/users/1')
-          .expect(204)
-      })
-    })
+          it('handles the POST #create method', function () {
+            return request(app.listen())
+              .post('/users')
+              .expect(201)
+              .expect({
+                user: user2
+              })
+          })
 
-    describe('with middleware', function () {
-      it('includes the middleware', function () {
-        class Controller2 {
-          static show (ctx) {
-            ctx.status = 200
-          }
-        }
-        let middleware = function (ctx, next) {
-          ctx.body = 'Middleware'
-          return next()
-        }
+          it('handles the PUT #update method', function () {
+            return request(app.listen())
+              .put('/users/1')
+              .expect(200)
+              .expect({
+                user: user1
+              })
+          })
 
-        router.resources('users', middleware, Controller2)
-        app.use(router.routes())
+          it('handles the PATCH #update method', function () {
+            return request(app.listen())
+              .patch('/users/1')
+              .expect(200)
+              .expect({
+                user: user1
+              })
+          })
 
-        return request(app.listen())
-          .get('/users/1')
-          .expect(200)
-          .expect('Middleware')
-      })
-    })
+          it('handles the DELETE #destroy method', function () {
+            return request(app.listen())
+              .del('/users/1')
+              .expect(204)
+          })
+        })
 
-    describe('with missing controller methods', function () {
-      it('treats undefined routes on the controller with 501', function () {
-        router.resources('users', _.omit(controller, 'show'))
-        app.use(router.routes())
-
-        return request(app.listen())
-          .get('/users/1')
-          .expect(501)
-      })
-    })
-
-    describe('using the `only` option', function () {
-      beforeEach(function () {
-        class Controller {
-          static show (ctx) {
-            ctx.status = 200
+        describe('with middleware', function () {
+          class Controller2Class {
+            static show (ctx) {
+              ctx.status = 200
+            }
           }
 
-          static index (ctx) {
-            ctx.status = 200
+          let Controller2Object = {
+            show: (ctx) => {
+              ctx.status = 200
+            }
           }
-        }
 
-        router.resources('users', Controller, { only: 'show' })
-        app.use(router.routes())
-      })
+          let controllers = [Controller2Object, Controller2Class]
 
-      it('handles the `only` route', function () {
-        return request(app.listen())
-          .get('/users/1')
-          .expect(200)
-      })
+          let middleware = function (ctx, next) {
+            ctx.body = 'Middleware'
+            return next()
+          }
 
-      it('treats other routes excluded via the `only` option with a 404', function () {
-        return request(app.listen())
-          .get('/users')
-          .expect(404)
-      })
-    })
+          let middleware2 = function (ctx, next) {
+            ctx.body = ctx.body + '2'
+            return next()
+          }
 
-    describe('using the `except` option', function () {
-      beforeEach(function () {
-        router.resources('users', controller, { except: ['index', 'create', 'update', 'destroy'] })
-        app.use(router.routes())
-      })
+          controllers.forEach((controller2, i) => {
+            describe(`with a ${i === 0 ? 'object' : 'class'} controller`, function () {
+              it('includes the middleware', function () {
+                router.resources('users', middleware, controller2)
+                app.use(router.routes())
 
-      it('handles the routes not excluded by the `except` option', function () {
-        return request(app.listen())
-          .get('/users/1')
-          .expect(200)
-      })
+                return request(app.listen())
+                  .get('/users/1')
+                  .expect(200)
+                  .expect('Middleware')
+              })
 
-      it('treats other routes in the `except` option with a 404', function () {
-        return request(app.listen())
-          .get('/users')
-          .expect(404)
+              it('handles middleware with options', function () {
+                router.resources('users', middleware, controller2, { only: ['show'] })
+                app.use(router.routes())
+
+                return request(app.listen())
+                  .get('/users/1')
+                  .expect(200)
+                  .expect('Middleware')
+              })
+
+              it('handles multiple middleware', function () {
+                router.resources('users', middleware, middleware2, controller2, { only: ['show'] })
+                app.use(router.routes())
+
+                return request(app.listen())
+                  .get('/users/1')
+                  .expect(200)
+                  .expect('Middleware2')
+              })
+            })
+          })
+        })
+
+        describe('with missing controller methods', function () {
+          it('treats undefined routes on the controller with 501', function () {
+            router.resources('users', _.omit(controller, 'show'))
+            app.use(router.routes())
+
+            return request(app.listen())
+              .get('/users/1')
+              .expect(501)
+          })
+        })
+
+        describe('with a leading slash', function () {
+          it('properly handles the routes', function () {
+            router.resources('/users', controller, { only: ['new'] })
+            app.use(router.routes())
+
+            return request(app.listen())
+              .get('/users/new')
+              .expect(200)
+              .expect('new')
+          })
+        })
+
+        describe('using the `only` option', function () {
+          beforeEach(function () {
+            class Controller {
+              static show (ctx) {
+                ctx.status = 200
+              }
+
+              static index (ctx) {
+                ctx.status = 200
+              }
+            }
+
+            router.resources('users', Controller, { only: 'show' })
+            app.use(router.routes())
+          })
+
+          it('handles the `only` route', function () {
+            return request(app.listen())
+              .get('/users/1')
+              .expect(200)
+          })
+
+          it('treats other routes excluded via the `only` option with a 404', function () {
+            return request(app.listen())
+              .get('/users')
+              .expect(404)
+          })
+        })
+
+        describe('using the `except` option', function () {
+          beforeEach(function () {
+            router.resources('users', controller, { except: ['index', 'create', 'update', 'destroy'] })
+            app.use(router.routes())
+          })
+
+          it('handles the routes not excluded by the `except` option', function () {
+            return request(app.listen())
+              .get('/users/1')
+              .expect(200)
+          })
+
+          it('treats other routes in the `except` option with a 404', function () {
+            return request(app.listen())
+              .get('/users')
+              .expect(404)
+          })
+        })
+
+        describe('using the `param` option', function () {
+          beforeEach(function () {
+            router.resources('users', controller, { param: 'uuid' })
+            app.use(router.routes())
+          })
+
+          it('handles the param name', function () {
+            return request(app.listen())
+              .get('/users/1/edit')
+              .expect(200)
+              .expect('edit:{"uuid":"1"}')
+          })
+        })
+
+        describe('using the `api` option', function () {
+          beforeEach(function () {
+            router.resources('users', controller, { api: true })
+            app.use(router.routes())
+          })
+
+          it('handles the api-specific', function () {
+            return request(app.listen())
+              .get('/users/1')
+              .expect(200)
+          })
+
+          it('excludes the `new` route', function () {
+            return request(app.listen())
+              .get('/users/new')
+              .expect(200) // NOTE: /users/:id grabs /users/new when `new` is excluded
+              .expect({
+                user: user1
+              })
+          })
+
+          it('excludes the `edit` route', function () {
+            return request(app.listen())
+              .get('/users/1/edit')
+              .expect(404)
+          })
+        })
       })
     })
   })
