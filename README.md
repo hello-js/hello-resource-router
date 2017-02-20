@@ -3,6 +3,7 @@
 [![Version](https://img.shields.io/npm/v/hello-resource-router.svg?style=flat-square)](https://www.npmjs.com/package/hello-resource-router)
 [![Dependency Status](https://img.shields.io/david/hello-framework/hello-resource-router.svg?style=flat-square)](https://david-dm.org/hello-framework/hello-resource-router)
 [![Build Status](https://img.shields.io/travis/hello-framework/hello-resource-router/master.svg?style=flat-square)](https://travis-ci.org/hello-framework/hello-resource-router)
+[![Coverage Status](https://coveralls.io/repos/github/hello-framework/hello-resource-router/badge.svg?branch=master)](https://coveralls.io/github/hello-framework/hello-resource-router?branch=master)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Downloads](https://img.shields.io/npm/dm/hello-resource-router.svg?style=flat-square)](https://www.npmjs.com/package/hello-resource-router)
 
