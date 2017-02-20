@@ -5,5 +5,8 @@
 .env
 *.local
 
+# Coverage
+.nyc_output
+
 # node
 node_modules/
