@@ -1,9 +1,9 @@
 {
-  "name": "koa-router-with-resources",
+  "name": "hello-resource-router",
   "version": "1.0.1",
   "description": "koa-router extended to include RESTful resources",
   "main": "lib/index.js",
-  "repository": "https://github.com/venables/koa-router-with-resources",
+  "repository": "https://github.com/hello-framework/hello-resource-router",
   "author": "Matt Venables <mattvenables@gmail.com>",
   "license": "MIT",
   "standard": {
@@ -12,14 +12,13 @@
     ]
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha test"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha test"
   },
   "dependencies": {
     "koa-router": "^7.1.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
     "koa": "next",
     "mocha": "^3.2.0",
     "supertest": "^2.0.1"

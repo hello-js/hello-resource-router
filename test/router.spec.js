@@ -1,7 +1,6 @@
 'use strict'
 
 const _ = require('lodash')
-const expect = require('chai').expect
 const Koa = require('koa')
 const request = require('supertest')
 const Router = require('../lib')
@@ -19,12 +18,19 @@ const controller = {
   index: (ctx) => {
     ctx.body = { users: [user1, user2] }
   },
+  new: (ctx) => {
+    ctx.body = 'new'
+  },
   show: (ctx) => {
     ctx.body = { user: user1 }
   },
   create: (ctx) => {
     ctx.body = { user: user2 }
     ctx.status = 201
+  },
+  edit: (ctx) => {
+    ctx.state.user = user1
+    ctx.body = 'edit'
   },
   update: (ctx) => {
     ctx.body = { user: user1 }
@@ -55,35 +61,43 @@ describe('Router', function () {
         return request(app.listen())
           .get('/users')
           .expect(200)
-          .then(function (res) {
-            expect(res.body).to.deep.equal({
-              users: [
-                user1,
-                user2
-              ]
-            })
+          .expect({
+            users: [
+              user1,
+              user2
+            ]
           })
+      })
+
+      it('handles the GET #new method', function () {
+        return request(app.listen())
+          .get('/users/new')
+          .expect(200)
+          .expect('new')
       })
 
       it('handles the GET #show method', function () {
         return request(app.listen())
           .get('/users/1')
           .expect(200)
-          .then(function (res) {
-            expect(res.body).to.deep.equal({
-              user: user1
-            })
+          .expect({
+            user: user1
           })
+      })
+
+      it('handles the GET #edit method', function () {
+        return request(app.listen())
+          .get('/users/1/edit')
+          .expect(200)
+          .expect('edit')
       })
 
       it('handles the POST #create method', function () {
         return request(app.listen())
           .post('/users')
           .expect(201)
-          .then(function (res) {
-            expect(res.body).to.deep.equal({
-              user: user2
-            })
+          .expect({
+            user: user2
           })
       })
 
@@ -91,10 +105,8 @@ describe('Router', function () {
         return request(app.listen())
           .put('/users/1')
           .expect(200)
-          .then(function (res) {
-            expect(res.body).to.deep.equal({
-              user: user1
-            })
+          .expect({
+            user: user1
           })
       })
 
@@ -102,10 +114,8 @@ describe('Router', function () {
         return request(app.listen())
           .patch('/users/1')
           .expect(200)
-          .then(function (res) {
-            expect(res.body).to.deep.equal({
-              user: user1
-            })
+          .expect({
+            user: user1
           })
       })
 
@@ -134,9 +144,7 @@ describe('Router', function () {
         return request(app.listen())
           .get('/users/1')
           .expect(200)
-          .then(function (res) {
-            expect(res.text).to.equal('Middleware')
-          })
+          .expect('Middleware')
       })
     })
 
