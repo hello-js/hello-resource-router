@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "description": "koa-router extended to include RESTful resources",
   "main": "lib/index.js",
-  "repository": "https://github.com/hello-framework/hello-resource-router",
+  "repository": "https://github.com/hello-js/hello-resource-router",
   "author": "Matt Venables <mattvenables@gmail.com>",
   "license": "MIT",
   "standard": {
